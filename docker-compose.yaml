@@ -1,0 +1,40 @@
+version: '2'
+services:
+  spring-project:
+    image: spring-project
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
+    volumes:
+      - $HOME/.m2/repository:/root/.m2/repository
+      - /spring-project
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/spring-project
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  db:
+    image: postgres:12
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_MULTIPLE_DATABASES=spring-project
+    volumes:
+      - ./db.sql:/docker-entrypoint-initdb.d/db.sql
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+       - spring-project-network
+
+volumes:
+  postgres-data:
+networks:
+  app-network:
+    driver: bridge
