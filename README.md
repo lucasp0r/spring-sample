@@ -3,8 +3,7 @@
 Repositório com container sample spring
 
 Composições:
-  Docker
-  Docker-Compose
-  mvn
-  spring-boot
-  
+  - `Docker`
+  - `Docker-compose`
+  - `Maven` 
+  - `Spring-boot`
