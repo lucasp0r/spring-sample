@@ -1,15 +1,14 @@
-FROM openjdk:11
+# Build stage
+#
 FROM maven:alpine
+COPY src /src
+COPY pom.xml pom.xml
+RUN mvn -f /spring-project/pom.xml clean instal -DskipTests
 
-# image layer
-WORKDIR /spring-project
-ADD pom.xml /spring-project
-RUN mvn verify clean --fail-never
-
-# Image layer: with the application
-COPY . /spring-project
-RUN mvn -v
-RUN mvn clean install -DskipTests
+#
+# Package stage
+#
+FROM openjdk:11
+COPY /target/spring-project.jar spring-project.jar
 EXPOSE 8080
-ADD ./target/spring-project.jar spring-project.jar
-ENTRYPOINT ["java","-jar","spring-project.ja"]
+ENTRYPOINT ["Java","-jar","/spring-project.jar"]
